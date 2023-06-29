@@ -86,13 +86,6 @@ async function convertTextToMp3(message,fileNumber,user_id){
     const [response] = await client.synthesizeSpeech(request);
     // Write the binary audio content to a local file
     const writeFile = util.promisify(fs.writeFile);
-    if(fileNumber != 0){
-      fs.unlink(`public/output${(fileNumber-1)+""+(user_id)}.mp3`, (err) => {
-        if (err) {
-            throw err;
-        }
-     })
-    }
     await writeFile(`public/output${fileNumber+""+user_id}.mp3`, response.audioContent, 'binary');
 
 
