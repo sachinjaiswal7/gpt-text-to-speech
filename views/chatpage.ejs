@@ -197,8 +197,9 @@ img {
         const sendButton = document.getElementById("send-button")
         sendButton.disabled = true
         sendButton.innerText = "...";
+        let response = undefined
         try{
-        let response = await fetch(`https://dummygpt-text-to-speech.onrender.com/api/v1/chat?prompt=${textForProcessing.value}`)
+        response = await fetch(`https://dummygpt-text-to-speech.onrender.com/api/v1/chat?prompt=${textForProcessing.value}`)
         response = await response.json();
         }catch(err){
           sendButton.disabled = false;
