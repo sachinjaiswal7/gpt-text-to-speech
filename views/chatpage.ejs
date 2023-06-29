@@ -197,10 +197,17 @@ img {
         const sendButton = document.getElementById("send-button")
         sendButton.disabled = true
         sendButton.innerText = "...";
+        try{
         let response = await fetch(`https://dummygpt-text-to-speech.onrender.com/api/v1/chat?prompt=${textForProcessing.value}`)
         response = await response.json();
+        }catch(err){
+          sendButton.disabled = false;
+          sendButton.innerText = "Send";
+          return;
+        }
         const data = response.data;
         const fileNumber = response.fileNumber;
+        const user_id = response.user_id;
         // 
         const parentElem = document.getElementById("chat-messages")
         const newElementHtml = `<div class="message sender">
@@ -213,7 +220,7 @@ img {
         parentElem.innerHTML += newElementHtml;
         textForProcessing.value = '';
         const audio = new Audio();
-        audio.src = `/output${fileNumber}.mp3`;
+        audio.src = `/output${fileNumber+""+user_id}.mp3`;
         audio.play();
         sendButton.disabled = false;
         sendButton.innerText = "Send";

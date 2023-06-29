@@ -45,7 +45,7 @@ try {
 
       const user = await User.findById(req.user._id);
       let fileNumber = user.fileNumber
-      await convertTextToMp3(modifiedText,fileNumber);
+      await convertTextToMp3(modifiedText,fileNumber,user._id.toString());
       user.fileNumber++;
       user.conversation.push({
         fromUser : prompt,
@@ -57,7 +57,8 @@ try {
       res.json({
           success : true,
           data : modifiedString,
-         fileNumber
+         fileNumber,
+         user_id : user._id.toString()
       });
 } catch (error) {
 next(error);
@@ -68,7 +69,7 @@ next(error);
 
 //google textospeech client using the inner credentials of dotenv
 const client = new textToSpeech.TextToSpeechClient();
-async function convertTextToMp3(message,fileNumber){
+async function convertTextToMp3(message,fileNumber,user_id){
      // The text to synthesize
     const text = message;
 
@@ -86,13 +87,13 @@ async function convertTextToMp3(message,fileNumber){
     // Write the binary audio content to a local file
     const writeFile = util.promisify(fs.writeFile);
     if(fileNumber != 0){
-      fs.unlink(`public/output${fileNumber-1}.mp3`, (err) => {
+      fs.unlink(`public/output${(fileNumber-1)+""+(user_id)}.mp3`, (err) => {
         if (err) {
             throw err;
         }
      })
     }
-    await writeFile(`public/output${fileNumber}.mp3`, response.audioContent, 'binary');
+    await writeFile(`public/output${fileNumber+""+user_id}.mp3`, response.audioContent, 'binary');
 
 
 }
